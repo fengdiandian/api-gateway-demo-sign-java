@@ -11,8 +11,6 @@ on:
 jobs:
   trigger-universal-pipeline:
     uses: fengdiandian/github-actions-templates/.github/workflows/universal-pipeline.yml@main 
-    with:
-      ref: ${{ github.ref  }}
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
