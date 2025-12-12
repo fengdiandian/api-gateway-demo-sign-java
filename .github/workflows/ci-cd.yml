@@ -1,33 +1,20 @@
-name: Manual Trigger Only Pipeline
+name: Manual CI/CD Pipeline Trigger 
  
 on:
-  workflow_dispatch:  # 👈 只允许手动触发
+  workflow_dispatch:
     inputs:
-      environment:
-        description: 'Target Environment'
-        required: true
-        default: 'staging'
-        type: choice
-        options:
-          - staging 
-          - production 
-      version_tag:
-        description: 'Image Version Tag'
-        required: false
-        type: string
+      ref:
+        description: 'Branch, tag, or commit SHA to checkout (e.g., refs/heads/main)'
+        required: true 
+        default: 'refs/heads/main'
  
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code 
-        uses: actions/checkout@v3
- 
-      - name: Echo Inputs
-        run: |
-          echo "Environment: ${{ github.event.inputs.environment  }}"
-          echo "Version Tag: ${{ github.event.inputs.version_tag  }}"
- 
-      - name: Deploy to Target Env
-        run: |
-          echo "🚀 Deploying to ${{ github.event.inputs.environment  }}"
+  call-universal-pipeline:
+    uses: fengdiandian/github-actions-templates/.github/workflows/universal-pipeline.yml@main 
+    with:
+      project_repo: ${{ github.repository  }}     # 当前调用仓库名称 [1]()
+      ref: ${{ github.event.inputs.ref  }}       # 用户手动输入的分支/tag引用 [2]()
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      KUBECONFIG: ${{ secrets.KUBECONFIG }}
