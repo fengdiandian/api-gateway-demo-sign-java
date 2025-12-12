@@ -1,19 +1,33 @@
-# any-project/.github/workflows/ci.yml 
-
-name: CI
-
+name: Manual Trigger Only Pipeline
+ 
 on:
-  push:
-    branches: [ main, develop ]
-    tags: [ 'v*' ]
-  workflow_dispatch:
-
+  workflow_dispatch:  # 👈 只允许手动触发
+    inputs:
+      environment:
+        description: 'Target Environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging 
+          - production 
+      version_tag:
+        description: 'Image Version Tag'
+        required: false
+        type: string
+ 
 jobs:
-  # 确保 'ci' job 下只有 'uses' 一个顶级键
-  ci:
-    # 将整个 uses 的值用双引号包裹，以避免 YAML 解析器产生歧义
-    uses: fengdiandian/github-actions-templates/.github/workflows/universal-pipeline.yaml@main 
-    with:
-      project_repo: ${{ github.repository  }}
-      deploy_to_prod: ${{ github.ref  == 'refs/heads/main' || startsWith(github.ref,  'refs/tags/v') }}
-    secrets: inherit
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code 
+        uses: actions/checkout@v3
+ 
+      - name: Echo Inputs
+        run: |
+          echo "Environment: ${{ github.event.inputs.environment  }}"
+          echo "Version Tag: ${{ github.event.inputs.version_tag  }}"
+ 
+      - name: Deploy to Target Env
+        run: |
+          echo "🚀 Deploying to ${{ github.event.inputs.environment  }}"
