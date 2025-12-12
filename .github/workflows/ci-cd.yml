@@ -1,0 +1,19 @@
+name: CI/CD Trigger 
+ 
+on:
+  push:
+    branches:
+      - main 
+      - release/*
+    tags:
+      - v*
+ 
+jobs:
+  trigger-universal-pipeline:
+    uses: fengdiandian/github-actions-templates/.github/workflows/universal-pipeline.yml@main 
+    with:
+      ref: ${{ github.ref  }}
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      KUBECONFIG_BASE64: ${{ secrets.KUBECONFIG_BASE64 }}
