@@ -10,7 +10,7 @@ on:
  
 jobs:
   call-universal-pipeline:
-    uses: fengdiandian/github-actions-templates/.github/workflows/universal-pipeline.yml@main 
+    uses: fengdiandian/github-actions-templates/.github/workflows/universal-pipeline.yaml@main 
     with:
       project_repo: ${{ github.repository  }}     # 当前调用仓库名称 [1]()
       ref: ${{ github.event.inputs.ref  }}       # 用户手动输入的分支/tag引用 [2]()
